@@ -5,8 +5,11 @@ class ProgramaPrincipal:
     def menu(self):
         while True:
             print("Menu de opciones Concesionaria")
-            print("2- Modificar Automovil")
             print("1- Cargar Automovil")
+            print("2- Modificar Automovil")
+            print("3- Borrar Automovil")
+            print("4- Cargar disponibilidad")
+            print("5- Mostrar datos")
             print("0- Salir de menu")
             nro = int(input("Por favor ingrese un número"))
             if nro == 1:
@@ -21,7 +24,20 @@ class ProgramaPrincipal:
                 modelo = input("Por favor ingrese el nombre del modelo: ")
                 precio = input("Por favor ingrese el nuevo precio: ")
                 automovil_a_modificar=Automovil(marca,modelo,precio)
-                automovil_a_modificar.modificar_automoviles()                
+                automovil_a_modificar.modificar_automoviles()   
+            if nro ==3:
+                marca = input("Por favor ingrese el nombre de la marca: ")
+                modelo = input("Por favor ingrese el nombre del modelo: ")
+                automovil_a_borrar=Automovil(marca,modelo)  
+                automovil_a_borrar.borrar_automovil() 
+            if nro ==4:
+                marca = input("Por favor ingrese el nombre de la marca: ")
+                modelo = input("Por favor ingrese el nombre del modelo: ")
+                automovil_a_sumar=Automovil(marca,modelo)
+                automovil_a_sumar.cargar_disponibilidad()   
+            if nro ==5:
+                mostrar = Automovil('a','b')
+                mostrar.mostrarDatos()   
             if nro==0:
                 break
     
@@ -64,8 +80,42 @@ class Automovil:
             print('Error al actualizar un automovil')
         finally:
             conexion.cerrarConexion()  
+
+    def borrar_automovil(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        try:
+            conexion.miCursor.execute("DELETE FROM AUTOMOVILES where marca='{}' and modelo='{}' ".format(self.marca,self.modelo))
+            conexion.miConexion.commit() 
+            print("Automovil borrado correctamente") 
+        except:
+            print('Error al borrar un automovil') 
+        finally:
+            conexion.cerrarConexion()
+
+    def cargar_disponibilidad(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        try:
+            conexion.miCursor.execute("UPDATE AUTOMOVILES SET cantidadDisponibles = cantidadDisponibles + 1 WHERE marca='{}' and modelo='{}' ".format(self.marca,self.modelo)) 
+            conexion.miConexion.commit()
+            print("Automovil modificado correctamente")
+        except:
+            print('Error al actualizar un automovil')
+        finally:
+            conexion.cerrarConexion()
+
+    def mostrarDatos(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        try:
+            conexion.miCursor.execute("SELECT * FROM AUTOMOVILES")
+            productos = conexion.miCursor.fetchall() 
+            print(productos)
+            conexion.miConexion.commit()
+        finally:
+            conexion.cerrarConexion()
         
-    
 class Conexiones:
     
     def abrirConexion(self):
