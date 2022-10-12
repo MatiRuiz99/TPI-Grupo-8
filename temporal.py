@@ -168,8 +168,9 @@ class Monopatin2:
     def Actualizarconiva(self):
         conexion = Conexiones2()
         conexion.abrirConexion2()
+        
         try:
-            conexion.miCursor2.execute("UPDATE Monopatin SET precio = precio + (precio * 0.23) WHERE marca='{}' and modelo='{}' and potencia='{}' and color='{}')".format(self.marca,self.modelo,self.potencia,self.precio,self.color))
+            conexion.miCursor2.execute("UPDATE Monopatin SET precio = precio + (precio * 0.23) WHERE marca='{}' and modelo='{}' and potencia='{}' and color='{}' ".format(self.marca,self.modelo,self.potencia,self.color))
             conexion.miConexion2.commit()
             print("Monopatin actualizado exitosamente")
         except:
