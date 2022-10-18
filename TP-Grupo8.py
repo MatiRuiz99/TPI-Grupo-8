@@ -1,4 +1,5 @@
 
+import datetime
 import sqlite3
 
 class ProgramaPrincipal:
@@ -48,6 +49,7 @@ class ProgramaPrincipal:
                 nuevo_mono.cargarMonopatin2()
                 nuevo_mono.cargarHistorial()
                 nuevo_mono.Actualizarconiva()
+                
             if nro ==8:
                 fecha = input("Por favor ingrese la fecha necesitar")
                 ultimafecha = Monopatin2(fechaUltimoPrecio = fecha)
@@ -200,9 +202,10 @@ class Monopatin2:
         conexion = Conexiones3()
         conexion.abrirConexion3()
         try:
-            conexion.miCursor3.execute("SELECT * FROM Monopatin ORDER BY fechaUltimoPrecio ASC")
+            conexion.miCursor3.execute("SELECT * FROM Monopatin WHERE fechaUlimoPrecio < {}", format(self.fechaUltimoPrecio))
             productos = conexion.miCursor3.fetchall()
-            print(productos)
+            for i in productos:
+                print(i)
             conexion.miConexion3.commit()
         finally:
             conexion.cerrarConexion3()
