@@ -12,7 +12,7 @@ class ProgramaPrincipal:
             print("4- Cargar disponibilidad")
             print("5- Mostrar datos")
             print("6- Tabla monopatin especial")
-            print("7- Actualizar precios monopatines especiales")
+            print("8- Mostrar monopatines de acuerdo a fecha")
             print("0- Salir de menu")
             nro = int(input("Por favor ingrese un número"))
             if nro == 1:
@@ -48,7 +48,10 @@ class ProgramaPrincipal:
                 nuevo_mono.cargarMonopatin2()
                 nuevo_mono.cargarHistorial()
                 nuevo_mono.Actualizarconiva()
-            
+            if nro ==8:
+                fecha = input("Por favor ingrese la fecha necesitar")
+                ultimafecha = Monopatin2(fechaUltimoPrecio = fecha)
+                ultimafecha.MostrarPorFecha()
                 
             if nro==0:
                 break
@@ -147,7 +150,7 @@ class Monopatin:
             conexion.cerrarConexion()
 
 class Monopatin2:
-    def __init__(self, marca, modelo, potencia, color, fechaUltimoPrecio, precio=None):
+    def __init__(self, marca=None, modelo=None, potencia=None, color=None, fechaUltimoPrecio=None, precio=None):
         self.marca = marca
         self.modelo = modelo
         self.potencia = potencia
@@ -192,6 +195,18 @@ class Monopatin2:
             print("Error al agregar historial de un Monopatin")
         finally:
             conexion.cerrarConexion3()
+
+    def MostrarPorFecha(self):
+        conexion = Conexiones3()
+        conexion.abrirConexion3()
+        try:
+            conexion.miCursor3.execute("SELECT * FROM Monopatin ORDER BY fechaUltimoPrecio ASC")
+            productos = conexion.miCursor3.fetchall()
+            print(productos)
+            conexion.miConexion3.commit()
+        finally:
+            conexion.cerrarConexion3()
+
 
 class Conexiones3:
     def abrirConexion3(self):
