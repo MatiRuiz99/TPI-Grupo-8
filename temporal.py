@@ -138,7 +138,10 @@ class Monopatin:
         try:
             conexion.miCursor.execute("SELECT * FROM Monopatines ORDER BY precio ASC")
             productos = conexion.miCursor.fetchall() 
-            print(productos)
+            print("ID Marca precio cantidadDisponible")
+            
+            for i in productos:
+                print(i)
             conexion.miConexion.commit()
         finally:
             conexion.cerrarConexion()
