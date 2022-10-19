@@ -44,7 +44,7 @@ class ProgramaPrincipal:
                 potencia = input("Por favor ingrese la potencia del Monopatin: ")
                 precio = input("Por favor ingrese el precio del Monopatin: ")
                 color = input("Por favor ingrese el color del monopatin: ")
-                fecha_ult_precio = input("Por favor ingrese la fecha de ultimo precio: ")
+                fecha_ult_precio = datetime.datetime.now()
                 nuevo_mono = Monopatin2(marca,modelo,potencia,color,fecha_ult_precio,precio)
                 nuevo_mono.cargarMonopatin2()
                 nuevo_mono.cargarHistorial()
@@ -164,6 +164,7 @@ class Monopatin2:
         conexion = Conexiones2()
         conexion.abrirConexion2()
         try:
+            
             conexion.miCursor2.execute("INSERT INTO Monopatin(marca,modelo,potencia,precio,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.potencia,self.precio,self.color,self.fechaUltimoPrecio))
             conexion.miConexion2.commit()
             
@@ -202,7 +203,7 @@ class Monopatin2:
         conexion = Conexiones3()
         conexion.abrirConexion3()
         try:
-            conexion.miCursor3.execute("SELECT * FROM Monopatin WHERE fechaUlimoPrecio < {}", format(self.fechaUltimoPrecio))
+            conexion.miCursor3.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(self.fechaUltimoPrecio))
             productos = conexion.miCursor3.fetchall()
             for i in productos:
                 print(i)
