@@ -1,6 +1,7 @@
 
 import datetime
 import sqlite3
+from timeit import repeat
 
 class ProgramaPrincipal:
 
@@ -15,49 +16,68 @@ class ProgramaPrincipal:
             print("6- Tabla monopatin especial")
             print("8- Mostrar monopatines de acuerdo a fecha")
             print("0- Salir de menu")
-            nro = int(input("Por favor ingrese un número"))
+            nro = int(input("Por favor ingrese un número: "))
+            marca = modelo = potencia = color = ''
+            precio = cantidadDisponibles = dia = mes = año = hora = -1
             if nro == 1:
-                marca = input("Por favor ingrese la marca del Monopatin: ")
-                precio = input("Por favor ingrese el precio del Monopatin: ")
-                cantidadDisponibles = input("Por favor ingrese la cantidad de unidades disponibles: ")
+                marca = generico(marca)
+                precio = obtenerprecio(precio)
+                while cantidadDisponibles < 0:
+                    cantidadDisponibles = int(input("Por favor ingrese la cantidad de unidades disponibles: "))
+                    if cantidadDisponibles < 0:
+                        print("Ingrese un numero mayor a 0")
                 nuevo_automovil = Monopatin(marca,precio,cantidadDisponibles)
                 nuevo_automovil.cargar_automovil()
             if nro ==2:
-                marca = input("Por favor ingrese el nombre de la marca: ")
-                precio = input("Por favor ingrese el nuevo precio: ")
+                marca = generico(marca)
+                precio = obtenerprecio(precio)
                 automovil_a_modificar=Monopatin(marca,precio)
                 automovil_a_modificar.modificar_automoviles()   
             if nro ==3:
-                marca = input("Por favor ingrese el nombre de la marca: ")
+                marca = generico(marca)
                 automovil_a_borrar=Monopatin(marca)  
                 automovil_a_borrar.borrar_automovil() 
-            if nro ==4:
-                marca = input("Por favor ingrese el nombre de la marca: ")
+            if nro ==4: 
+                marca =generico(marca)
                 automovil_a_sumar=Monopatin(marca)
                 automovil_a_sumar.cargar_disponibilidad()   
             if nro ==5:
-                mostrar = Monopatin('a')
-                mostrar.mostrarDatos() 
+                mostrarDatos() 
             if nro ==6:
-                marca = input("Por favor ingrese la marca del Monopatin: ")
-                modelo = input("Por favor ingrese el modelo del Monopatin: ")
-                potencia = input("Por favor ingrese la potencia del Monopatin: ")
-                precio = input("Por favor ingrese el precio del Monopatin: ")
-                color = input("Por favor ingrese el color del monopatin: ")
+                modelo = potencia = color = ''
+                precio = -1
+                marca = generico(marca)
+                while modelo == '':
+                    modelo = input("Por favor ingrese el modelo del Monopatin: ")
+                while potencia == '':
+                    potencia = input("Por favor ingrese la potencia del Monopatin: ")
+                precio = obtenerprecio(precio)
+                while color == '':
+                    color = input("Por favor ingrese el color del monopatin: ")
                 fecha_ult_precio = datetime.datetime.now()
                 nuevo_mono = Monopatin2(marca,modelo,potencia,color,fecha_ult_precio,precio)
                 nuevo_mono.cargarMonopatin2()
                 nuevo_mono.cargarHistorial()
                 nuevo_mono.Actualizarconiva()
-                
+
             if nro ==8:
-                fecha = input("Por favor ingrese la fecha necesitar")
-                ultimafecha = Monopatin2(fechaUltimoPrecio = fecha)
-                ultimafecha.MostrarPorFecha()
+                while dia < 1 or dia > 31:
+                    dia = int(input("Por favor ingrese dia : "))
+                while mes < 1 or mes > 12:
+                    mes = int(input("Por favor ingrese mes: "))
+                while año < 1 :
+                    año = int(input("por favor ingrese año: "))
+                while hora < 0 or hora > 23:
+                    hora = int(input("Por favor ingrese hora: "))
+                fecha = f'{año}-{mes}-{dia} {hora}:00:00'
+                MostrarPorFecha(fecha)
+                MostrarPorFechaHistorica(fecha)
+                
+                
                 
             if nro==0:
                 break
-    
+
     def crearTablas(self):
         conexion = Conexiones() #Esto
         conexion.abrirConexion() #ESTO
@@ -81,6 +101,19 @@ class ProgramaPrincipal:
         conexion.miCursor3.execute("CREATE TABLE Monopatin (id_mono INTEGER PRIMARY KEY , marca  VARCHAR(30) , modelo  VARCHAR(30) , potencia  VARCHAR(30) , precio INTEGER NOT NULL, color  VARCHAR(30) , fechaUltimoPrecio DATETIME)")    
         conexion.miConexion3.commit()  #ESTO     
         conexion.cerrarConexion3() # ESTO SIEMPRE LO MISMO
+
+def generico(marca):
+    marca = input("Por favor ingrese la marca del Monopatin: ")
+    if marca == '':
+            marca = 'Generico'
+    return marca
+
+def obtenerprecio(precio):
+    while precio < 0:
+        precio = float(input("Por favor ingrese el nuevo precio: "))
+        if precio < 0:
+            print("Ingrese un numero mayor a 0")
+    return precio
 
 class Monopatin:
     def __init__(self, marca,precio=None,cantidadDisponibles=None):
@@ -137,22 +170,22 @@ class Monopatin:
         finally:
             conexion.cerrarConexion()
 
-    def mostrarDatos(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
-        try:
-            conexion.miCursor.execute("SELECT * FROM Monopatines ORDER BY precio ASC")
-            productos = conexion.miCursor.fetchall() 
-            print("ID Marca precio cantidadDisponible")
+def mostrarDatos():
+    conexion = Conexiones()
+    conexion.abrirConexion()
+    try:
+        conexion.miCursor.execute("SELECT * FROM Monopatines ORDER BY precio ASC")
+        productos = conexion.miCursor.fetchall() 
+        print("ID Marca precio cantidadDisponible")
             
-            for i in productos:
-                print(i)
-            conexion.miConexion.commit()
-        finally:
-            conexion.cerrarConexion()
+        for i in productos:
+            print(i)
+        conexion.miConexion.commit()
+    finally:
+        conexion.cerrarConexion()
 
 class Monopatin2:
-    def __init__(self, marca=None, modelo=None, potencia=None, color=None, fechaUltimoPrecio=None, precio=None):
+    def __init__(self, marca, modelo, potencia, color, fechaUltimoPrecio, precio):
         self.marca = marca
         self.modelo = modelo
         self.potencia = potencia
@@ -199,18 +232,33 @@ class Monopatin2:
         finally:
             conexion.cerrarConexion3()
 
-    def MostrarPorFecha(self):
-        conexion = Conexiones3()
-        conexion.abrirConexion3()
-        try:
-            conexion.miCursor3.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(self.fechaUltimoPrecio))
-            productos = conexion.miCursor3.fetchall()
-            for i in productos:
-                print(i)
-            conexion.miConexion3.commit()
-        finally:
-            conexion.cerrarConexion3()
+def MostrarPorFechaHistorica(fecha):
+    conexion = Conexiones3()
+    conexion.abrirConexion3()
+    try:
+        conexion.miCursor3.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(fecha))
+        productos = conexion.miCursor3.fetchall()
+        print("")
+        print("Precio historial")
+        for i in productos:
+            print(i)
+        conexion.miConexion3.commit()
+    finally:
+        conexion.cerrarConexion3()
 
+def MostrarPorFecha(fecha):
+    conexion = Conexiones2()
+    conexion.abrirConexion2()
+    try:
+        conexion.miCursor2.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(fecha))
+        productos = conexion.miCursor2.fetchall()
+        print("")
+        print("Precio luego del aumento")
+        for i in productos:
+            print(i)
+        conexion.miConexion2.commit()
+    finally:
+        conexion.cerrarConexion2()
 
 class Conexiones3:
     def abrirConexion3(self):
@@ -222,7 +270,7 @@ class Conexiones3:
 
 class Conexiones2:
     def abrirConexion2(self):
-        self.miConexion2 = sqlite3.connect("Tienda especial")
+        self.miConexion2 = sqlite3.connect("Monopatin")
         self.miCursor2 = self.miConexion2.cursor()
 
     def cerrarConexion2(self):
