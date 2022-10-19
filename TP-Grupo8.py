@@ -14,7 +14,7 @@ class ProgramaPrincipal:
             print("4- Cargar disponibilidad")
             print("5- Mostrar datos")
             print("6- Tabla monopatin especial")
-            print("8- Mostrar monopatines de acuerdo a fecha")
+            print("7- Mostrar monopatines de acuerdo a fecha")
             print("0- Salir de menu")
             nro = int(input("Por favor ingrese un número: "))
             marca = modelo = potencia = color = ''
@@ -28,22 +28,22 @@ class ProgramaPrincipal:
                         print("Ingrese un numero mayor a 0")
                 nuevo_automovil = Monopatin(marca,precio,cantidadDisponibles)
                 nuevo_automovil.cargar_automovil()
-            if nro ==2:
+            if nro == 2:
                 marca = generico(marca)
                 precio = obtenerprecio(precio)
                 automovil_a_modificar=Monopatin(marca,precio)
                 automovil_a_modificar.modificar_automoviles()   
-            if nro ==3:
+            if nro == 3:
                 marca = generico(marca)
                 automovil_a_borrar=Monopatin(marca)  
                 automovil_a_borrar.borrar_automovil() 
-            if nro ==4: 
+            if nro == 4: 
                 marca =generico(marca)
                 automovil_a_sumar=Monopatin(marca)
                 automovil_a_sumar.cargar_disponibilidad()   
-            if nro ==5:
+            if nro == 5:
                 mostrarDatos() 
-            if nro ==6:
+            if nro == 6:
                 modelo = potencia = color = ''
                 precio = -1
                 marca = generico(marca)
@@ -59,8 +59,7 @@ class ProgramaPrincipal:
                 nuevo_mono.cargarMonopatin2()
                 nuevo_mono.cargarHistorial()
                 nuevo_mono.Actualizarconiva()
-
-            if nro ==8:
+            if nro == 7:
                 while dia < 1 or dia > 31:
                     dia = int(input("Por favor ingrese dia : "))
                 while mes < 1 or mes > 12:
@@ -71,36 +70,33 @@ class ProgramaPrincipal:
                     hora = int(input("Por favor ingrese hora: "))
                 fecha = f'{año}-{mes}-{dia} {hora}:00:00'
                 MostrarPorFecha(fecha)
-                MostrarPorFechaHistorica(fecha)
-                
-                
-                
-            if nro==0:
+                MostrarPorFechaHistorica(fecha)           
+            if nro == 0:
                 break
 
     def crearTablas(self):
-        conexion = Conexiones() #Esto
-        conexion.abrirConexion() #ESTO
-        conexion.miCursor.execute("DROP TABLE IF EXISTS Monopatines")
-        conexion.miCursor.execute("CREATE TABLE Monopatines (id_monopatin INTEGER PRIMARY KEY , marca  VARCHAR(30) ,precio FLOAT NOT NULL, cantidadDisponibles INTEGER NOT NULL,UNIQUE(marca))")    
+        conexion = Tienda() #Esto
+        conexion.abrirTienda() #ESTO
+        conexion.miCursorTienda.execute("DROP TABLE IF EXISTS Monopatines")
+        conexion.miCursorTienda.execute("CREATE TABLE Monopatines (id_monopatin INTEGER PRIMARY KEY , marca  VARCHAR(30) ,precio FLOAT NOT NULL, cantidadDisponibles INTEGER NOT NULL,UNIQUE(marca))")    
         conexion.miConexion.commit()  #ESTO     
-        conexion.cerrarConexion() # ESTO SIEMPRE LO MISMO
+        conexion.cerrarTienda() # ESTO SIEMPRE LO MISMO
     
     def crearTablaMono(self):
-        conexion = Conexiones2() #Esto
-        conexion.abrirConexion2() #ESTO
-        conexion.miCursor2.execute("DROP TABLE IF EXISTS Monopatin")
-        conexion.miCursor2.execute("CREATE TABLE Monopatin (id_mono INTEGER PRIMARY KEY , marca  VARCHAR(30) , modelo  VARCHAR(30) , potencia  VARCHAR(30) , precio INTEGER NOT NULL, color  VARCHAR(30) , fechaUltimoPrecio DATETIME)")    
-        conexion.miConexion2.commit()  #ESTO     
-        conexion.cerrarConexion2() # ESTO SIEMPRE LO MISMO
+        conexion = Productos() #Esto
+        conexion.abrirProductos() #ESTO
+        conexion.miCursorProductos.execute("DROP TABLE IF EXISTS Monopatin")
+        conexion.miCursorProductos.execute("CREATE TABLE Monopatin (id_mono INTEGER PRIMARY KEY , marca  VARCHAR(30) , modelo  VARCHAR(30) , potencia  VARCHAR(30) , precio INTEGER NOT NULL, color  VARCHAR(30) , fechaUltimoPrecio DATETIME)")    
+        conexion.miProducto.commit()  #ESTO     
+        conexion.cerrarProductos() # ESTO SIEMPRE LO MISMO
     
     def crearTablaMonoHistorial(self):
-        conexion = Conexiones3() #Esto
-        conexion.abrirConexion3() #ESTO
-        conexion.miCursor3.execute("DROP TABLE IF EXISTS Monopatin")
-        conexion.miCursor3.execute("CREATE TABLE Monopatin (id_mono INTEGER PRIMARY KEY , marca  VARCHAR(30) , modelo  VARCHAR(30) , potencia  VARCHAR(30) , precio INTEGER NOT NULL, color  VARCHAR(30) , fechaUltimoPrecio DATETIME)")    
-        conexion.miConexion3.commit()  #ESTO     
-        conexion.cerrarConexion3() # ESTO SIEMPRE LO MISMO
+        conexion = Historial() #Esto
+        conexion.abrirHistorial() #ESTO
+        conexion.miCursorHistorial.execute("DROP TABLE IF EXISTS Monopatin")
+        conexion.miCursorHistorial.execute("CREATE TABLE Monopatin (id_mono INTEGER PRIMARY KEY , marca  VARCHAR(30) , modelo  VARCHAR(30) , potencia  VARCHAR(30) , precio INTEGER NOT NULL, color  VARCHAR(30) , fechaUltimoPrecio DATETIME)")    
+        conexion.miHistorial.commit()  #ESTO     
+        conexion.cerrarHistorial() # ESTO SIEMPRE LO MISMO
 
 def generico(marca):
     marca = input("Por favor ingrese la marca del Monopatin: ")
@@ -122,67 +118,67 @@ class Monopatin:
         self.cantidadDisponibles=cantidadDisponibles
         
     def cargar_automovil(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
+        conexion = Tienda()
+        conexion.abrirTienda()
         try:
-            conexion.miCursor.execute("INSERT INTO Monopatines(marca,precio,cantidadDisponibles) VALUES('{}', '{}','{}')".format(self.marca, self.precio,self.cantidadDisponibles))
+            conexion.miCursorTienda.execute("INSERT INTO Monopatines(marca,precio,cantidadDisponibles) VALUES('{}', '{}','{}')".format(self.marca, self.precio,self.cantidadDisponibles))
             conexion.miConexion.commit()
             print("Monopatin cargado exitosamente")
         except:
             print("Error al agregar un Monopatin")
         finally:
-            conexion.cerrarConexion()
+            conexion.cerrarTienda()
 
     
     def modificar_automoviles(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
+        conexion = Tienda()
+        conexion.abrirTienda()
         try:
-            conexion.miCursor.execute("UPDATE Monopatines SET precio='{}' where marca='{}' ".format(self.precio,self.marca))
+            conexion.miCursorTienda.execute("UPDATE Monopatines SET precio='{}' where marca='{}' ".format(self.precio,self.marca))
             conexion.miConexion.commit()
             print("Monopatin modificado correctamente")
         except:
             print('Error al actualizar un Monopatin')
         finally:
-            conexion.cerrarConexion()  
+            conexion.cerrarTienda()  
 
     def borrar_automovil(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
+        conexion = Tienda()
+        conexion.abrirTienda()
         try:
-            conexion.miCursor.execute("DELETE FROM Monopatines where marca='{}' ".format(self.marca))
+            conexion.miCursorTienda.execute("DELETE FROM Monopatines where marca='{}' ".format(self.marca))
             conexion.miConexion.commit() 
             print("Monopatin borrado correctamente") 
         except:
             print('Error al borrar un Monopatin') 
         finally:
-            conexion.cerrarConexion()
+            conexion.cerrarTienda()
 
     def cargar_disponibilidad(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
+        conexion = Tienda()
+        conexion.abrirTienda()
         try:
-            conexion.miCursor.execute("UPDATE Monopatines SET cantidadDisponibles = cantidadDisponibles + 1 WHERE marca='{}' ".format(self.marca)) 
+            conexion.miCursorTienda.execute("UPDATE Monopatines SET cantidadDisponibles = cantidadDisponibles + 1 WHERE marca='{}' ".format(self.marca)) 
             conexion.miConexion.commit()
             print("Monopatin modificado correctamente")
         except:
             print('Error al actualizar un Monopatin')
         finally:
-            conexion.cerrarConexion()
+            conexion.cerrarTienda()
 
 def mostrarDatos():
-    conexion = Conexiones()
-    conexion.abrirConexion()
+    conexion = Tienda()
+    conexion.abrirTienda()
     try:
-        conexion.miCursor.execute("SELECT * FROM Monopatines ORDER BY precio ASC")
-        productos = conexion.miCursor.fetchall() 
+        conexion.miCursorTienda.execute("SELECT * FROM Monopatines ORDER BY precio ASC")
+        productos = conexion.miCursorTienda.fetchall() 
         print("ID Marca precio cantidadDisponible")
             
         for i in productos:
             print(i)
         conexion.miConexion.commit()
     finally:
-        conexion.cerrarConexion()
+        conexion.cerrarTienda()
 
 class Monopatin2:
     def __init__(self, marca, modelo, potencia, color, fechaUltimoPrecio, precio):
@@ -194,95 +190,95 @@ class Monopatin2:
         self.fechaUltimoPrecio = fechaUltimoPrecio
 
     def cargarMonopatin2(self):
-        conexion = Conexiones2()
-        conexion.abrirConexion2()
+        conexion = Productos()
+        conexion.abrirProductos()
         try:
             
-            conexion.miCursor2.execute("INSERT INTO Monopatin(marca,modelo,potencia,precio,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.potencia,self.precio,self.color,self.fechaUltimoPrecio))
-            conexion.miConexion2.commit()
+            conexion.miCursorProductos.execute("INSERT INTO Monopatin(marca,modelo,potencia,precio,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.potencia,self.precio,self.color,self.fechaUltimoPrecio))
+            conexion.miProducto.commit()
             
             print("Monopatin cargado exitosamente")
         except:
             print("Error al agregar un Monopatin")
         finally:
-            conexion.cerrarConexion2()
+            conexion.cerrarProductos()
 
     def Actualizarconiva(self):
-        conexion = Conexiones2()
-        conexion.abrirConexion2()
+        conexion = Productos()
+        conexion.abrirProductos()
         
         try:
-            conexion.miCursor2.execute("UPDATE Monopatin SET precio = precio + (precio * 0.23) WHERE marca='{}' and modelo='{}' and potencia='{}' and color='{}' ".format(self.marca,self.modelo,self.potencia,self.color))
-            conexion.miConexion2.commit()
+            conexion.miCursorProductos.execute("UPDATE Monopatin SET precio = precio + (precio * 0.23) WHERE marca='{}' and modelo='{}' and potencia='{}' and color='{}' ".format(self.marca,self.modelo,self.potencia,self.color))
+            conexion.miProducto.commit()
             print("Monopatin actualizado exitosamente")
         except:
             print("Error al actualizar un Monopatin")
         finally:
-            conexion.cerrarConexion2()
+            conexion.cerrarProductos()
 
     def cargarHistorial(self):
-        conexion = Conexiones3()
-        conexion.abrirConexion3()
+        conexion = Historial()
+        conexion.abrirHistorial()
         try:
-            conexion.miCursor3.execute("INSERT INTO Monopatin(marca,modelo,potencia,precio,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.potencia,self.precio,self.color,self.fechaUltimoPrecio))
-            conexion.miConexion3.commit()
+            conexion.miCursorHistorial.execute("INSERT INTO Monopatin(marca,modelo,potencia,precio,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.potencia,self.precio,self.color,self.fechaUltimoPrecio))
+            conexion.miHistorial.commit()
             print("Monopatin cargado historial exitosamente")
         except:
             print("Error al agregar historial de un Monopatin")
         finally:
-            conexion.cerrarConexion3()
+            conexion.cerrarHistorial()
 
 def MostrarPorFechaHistorica(fecha):
-    conexion = Conexiones3()
-    conexion.abrirConexion3()
+    conexion = Historial()
+    conexion.abrirHistorial()
     try:
-        conexion.miCursor3.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(fecha))
-        productos = conexion.miCursor3.fetchall()
+        conexion.miCursorHistorial.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(fecha))
+        productos = conexion.miCursorHistorial.fetchall()
         print("")
         print("Precio historial")
         for i in productos:
             print(i)
-        conexion.miConexion3.commit()
+        conexion.miHistorial.commit()
     finally:
-        conexion.cerrarConexion3()
+        conexion.cerrarHistorial()
 
 def MostrarPorFecha(fecha):
-    conexion = Conexiones2()
-    conexion.abrirConexion2()
+    conexion = Productos()
+    conexion.abrirProductos()
     try:
-        conexion.miCursor2.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(fecha))
-        productos = conexion.miCursor2.fetchall()
+        conexion.miCursorProductos.execute("SELECT * FROM Monopatin WHERE fechaUltimoPrecio < '{}'".format(fecha))
+        productos = conexion.miCursorProductos.fetchall()
         print("")
         print("Precio luego del aumento")
         for i in productos:
             print(i)
-        conexion.miConexion2.commit()
+        conexion.miProducto.commit()
     finally:
-        conexion.cerrarConexion2()
+        conexion.cerrarProductos()
 
-class Conexiones3:
-    def abrirConexion3(self):
-        self.miConexion3 = sqlite3.connect("Hitorico_Mono")
-        self.miCursor3 = self.miConexion3.cursor()
+class Historial:
+    def abrirHistorial(self):
+        self.miHistorial = sqlite3.connect("Hitorico_Mono")
+        self.miCursorHistorial = self.miHistorial.cursor()
     
-    def cerrarConexion3(self):
-        self.miConexion3.close()
+    def cerrarHistorial(self):
+        self.miHistorial.close()
 
-class Conexiones2:
-    def abrirConexion2(self):
-        self.miConexion2 = sqlite3.connect("Monopatin")
-        self.miCursor2 = self.miConexion2.cursor()
+class Productos:
+    def abrirProductos(self):
+        self.miProducto = sqlite3.connect("Monopatin")
+        self.miCursorProductos = self.miProducto.cursor()
 
-    def cerrarConexion2(self):
-        self.miConexion2.close()
+    def cerrarProductos(self):
+        self.miProducto.close()
 
-class Conexiones:
+class Tienda:
     
-    def abrirConexion(self):
+    def abrirTienda(self):
         self.miConexion = sqlite3.connect("Tienda")
-        self.miCursor = self.miConexion.cursor()
+        self.miCursorTienda = self.miConexion.cursor()
         
-    def cerrarConexion(self):
+    def cerrarTienda(self):
         self.miConexion.close()   
 
 
