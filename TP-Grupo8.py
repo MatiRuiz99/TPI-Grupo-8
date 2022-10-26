@@ -18,7 +18,7 @@ class ProgramaPrincipal:
             print("0- Salir de menu")
             nro = int(input("Por favor ingrese un número: "))
             marca = modelo = potencia = color = ''
-            precio = cantidadDisponibles = dia = mes = año = hora = -1
+            precio = cantidadDisponibles = dia = mes = año = hora = minutos = -1
             if nro == 1:
                 marca = generico(marca)
                 precio = obtenerprecio(precio)
@@ -26,21 +26,21 @@ class ProgramaPrincipal:
                     cantidadDisponibles = int(input("Por favor ingrese la cantidad de unidades disponibles: "))
                     if cantidadDisponibles < 0:
                         print("Ingrese un numero mayor a 0")
-                nuevo_automovil = Monopatin(marca,precio,cantidadDisponibles)
-                nuevo_automovil.cargar_automovil()
+                nuevo_monopatin = Monopatin(marca,precio,cantidadDisponibles)
+                nuevo_monopatin.cargar_monopatin()
             if nro == 2:
                 marca = generico(marca)
                 precio = obtenerprecio(precio)
-                automovil_a_modificar=Monopatin(marca,precio)
-                automovil_a_modificar.modificar_automoviles()   
+                monopatin_a_modificar=Monopatin(marca,precio)
+                monopatin_a_modificar.modificar_monopatines()   
             if nro == 3:
                 marca = generico(marca)
-                automovil_a_borrar=Monopatin(marca)  
-                automovil_a_borrar.borrar_automovil() 
+                monopatin_a_borrar=Monopatin(marca)  
+                monopatin_a_borrar.borrar_monopatin() 
             if nro == 4: 
                 marca =generico(marca)
-                automovil_a_sumar=Monopatin(marca)
-                automovil_a_sumar.cargar_disponibilidad()   
+                monopatin_a_sumar=Monopatin(marca)
+                monopatin_a_sumar.cargar_disponibilidad()   
             if nro == 5:
                 mostrarDatos() 
             if nro == 6:
@@ -117,7 +117,7 @@ class Monopatin:
         self.precio=precio
         self.cantidadDisponibles=cantidadDisponibles
         
-    def cargar_automovil(self):
+    def cargar_monopatin(self):
         conexion = Tienda()
         conexion.abrirTienda()
         try:
@@ -130,7 +130,7 @@ class Monopatin:
             conexion.cerrarTienda()
 
     
-    def modificar_automoviles(self):
+    def modificar_monopatines(self):
         conexion = Tienda()
         conexion.abrirTienda()
         try:
@@ -142,7 +142,7 @@ class Monopatin:
         finally:
             conexion.cerrarTienda()  
 
-    def borrar_automovil(self):
+    def borrar_monopatin(self):
         conexion = Tienda()
         conexion.abrirTienda()
         try:
